@@ -37,8 +37,8 @@ const Nav = () => {
           href="#hero"
           className="flex items-center gap-2 font-mono-acc text-[12px] tracking-[0.2em] uppercase text-white/60"
         >
-          <span className="w-2 h-2 rounded-full bg-[#E63946]" />
-          <span className="text-white font-semibold">HRIDYANSH</span> / PORTFOLIO
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E63946] animate-pulse" />
+          <span className="text-white font-semibold">// HRIDYANSH</span>
         </a>
 
         {/* Desktop links */}
