@@ -1,7 +1,7 @@
 // src/lib/api.js
 // Update BASE_URL when you deploy your backend
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-hc24.onrender.com";
 
 /**
  * Sends the contact form data to the Express backend.

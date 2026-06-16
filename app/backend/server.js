@@ -1,6 +1,6 @@
 /**
  * Hridyansh Chaudhary — Portfolio API
- * Express.js + Nodemailer (Contact Form)
+ * Express.js + Resend (Contact Form)
  *
  * Run with:
  *   node server.js
@@ -9,7 +9,7 @@
 
 import express from "express";
 import cors from "cors";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { body, validationResult } from "express-validator";
 import dotenv from "dotenv";
 
@@ -17,24 +17,16 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8001;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── Middleware ────────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
   })
 );
-
-// ─── Nodemailer transporter ────────────────────────────────────────────────────
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,   // your Gmail address
-    pass: process.env.EMAIL_PASS,   // Gmail App Password (not your login password)
-  },
-});
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -52,7 +44,6 @@ app.post(
     body("message").trim().notEmpty().withMessage("Message can't be empty"),
   ],
   async (req, res) => {
-    // Validate inputs
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -62,10 +53,10 @@ app.post(
 
     try {
       // Email sent TO you (notification)
-      await transporter.sendMail({
-        from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER, // your inbox
-        replyTo: email,
+      await resend.emails.send({
+        from: "Portfolio Contact <onboarding@resend.dev>",
+        to: process.env.EMAIL_USER,
+        reply_to: email,
         subject: subject ? `[Portfolio] ${subject}` : `[Portfolio] New message from ${name}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
@@ -81,8 +72,8 @@ app.post(
       });
 
       // Auto-reply TO the sender
-      await transporter.sendMail({
-        from: `"Hridyansh Chaudhary" <${process.env.EMAIL_USER}>`,
+      await resend.emails.send({
+        from: "Hridyansh Chaudhary <onboarding@resend.dev>",
         to: email,
         subject: "Got your message! I'll reply soon.",
         html: `
