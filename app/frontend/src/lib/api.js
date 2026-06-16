@@ -26,4 +26,4 @@ export async function sendContactMessage({ name, email, subject, message }) {
  * Direct download link for your CV PDF.
  * Put your CV file inside frontend/public/cv/ and update the filename.
  */
-export const cvDownloadUrl = "/cv/Hridyansh_Chaudhary_CV.pdf";
+export const cvDownloadUrl = "/Hridyansh_Chaudhary_Resume.pdf";
