@@ -1,0 +1,25 @@
+# Environment files - NEVER push these
+.env
+app/backend/.env
+app/frontend/.env
+
+# Dependencies
+node_modules/
+app/frontend/node_modules/
+app/backend/node_modules/
+
+# Build output
+dist/
+build/
+app/frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
