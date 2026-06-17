@@ -30,17 +30,16 @@ const About = () => {
             <span className="text-white font-semibold">
               modern, responsive web applications
             </span>{" "}
-            while expanding into Python, backend development, and AI/ML.
+            while steadily expanding into backend development and AI/ML.
           </p>
 
           <p className="reveal reveal-delay-1 text-base md:text-lg text-white/55 leading-relaxed">
-            Beyond the editor, I trained for years as a{" "}
+            I enjoy turning ideas into{" "}
             <span className="text-white">
-              Senior Under Officer in the National Cadet Corps
+              clean, functional interfaces
             </span>
-            , commanding a platoon, clearing the NCC 'C' Certificate, and completing an
-            Army Attachment Camp. That training shaped how I plan, communicate, and ship —
-            calmly, on time, end-to-end.
+            . Still learning, still growing — but I take every project seriously and
+            always aim to write code that actually works well and looks good doing it.
           </p>
 
           <div className="reveal reveal-delay-2 pt-4 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-white/10 mt-8">

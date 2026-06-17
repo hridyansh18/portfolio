@@ -2,115 +2,136 @@ import { Download, ArrowUpRight, MapPin } from "lucide-react";
 import { cvDownloadUrl } from "../../lib/api";
 import { useEffect, useRef } from "react";
 
-const GeoMesh = () => {
+const ArtisticBg = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    let animId;
-    const RED2 = "rgba(230,57,70,";
-    const COLS = 14, ROWS = 9;
-    let pts = [], W, H, frame = 0;
+    const cv = canvasRef.current;
+    const ctx = cv.getContext("2d");
+    let animId, t = 0;
 
     const resize = () => {
-      W = canvas.width = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
-      buildGrid();
+      cv.width = cv.offsetWidth;
+      cv.height = cv.offsetHeight;
     };
-
-    const buildGrid = () => {
-      const gx = W / (COLS - 1), gy = H / (ROWS - 1);
-      pts = [];
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const bx = c * gx, by = r * gy;
-          pts.push({
-            bx, by, x: bx, y: by,
-            amp: 8 + Math.random() * 18,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.003 + Math.random() * 0.005,
-            bright: Math.random() < 0.08,
-            pulse: Math.random() * Math.PI * 2,
-            pulseSpeed: 0.02 + Math.random() * 0.03,
-          });
-        }
-      }
-    };
-
     resize();
     window.addEventListener("resize", resize);
 
+    const orbs = [
+      { x: 0.78, y: 0.25, r: 0.32, color: "230,57,70",   a: 0.06  },
+      { x: 0.62, y: 0.72, r: 0.22, color: "120,100,255", a: 0.04  },
+      { x: 0.90, y: 0.55, r: 0.18, color: "230,57,70",   a: 0.035 },
+    ];
+
+    const lines = Array.from({ length: 9 }, (_, i) => ({
+      seed:  i * 1.3,
+      speed: 0.0004 + i * 0.00007,
+      width: 0.4 + (i % 3) * 0.3,
+      red:   i === 2 || i === 6,
+      yBase: 0.1 + i * 0.1,
+      amp:   60 + i * 18,
+      freq:  0.7 + i * 0.15,
+      phase: i * 0.9,
+    }));
+
+    const dots = Array.from({ length: 38 }, () => ({
+      x:   0.35 + Math.random() * 0.65,
+      y:   Math.random(),
+      r:   0.6  + Math.random() * 1.0,
+      a:   0.06 + Math.random() * 0.12,
+      red: Math.random() < 0.18,
+    }));
+
     const draw = () => {
+      const W = cv.width, H = cv.height;
+
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = "#060608";
+      ctx.fillStyle = "#080809";
       ctx.fillRect(0, 0, W, H);
 
-      // Subtle red corner glow
-      const vg = ctx.createRadialGradient(W, 0, 0, W, 0, W * 0.7);
-      vg.addColorStop(0, "rgba(230,57,70,0.07)");
-      vg.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = vg;
-      ctx.fillRect(0, 0, W, H);
-
-      // Animate
-      pts.forEach((p) => {
-        p.x = p.bx + Math.sin(frame * p.speed + p.phase) * p.amp;
-        p.y = p.by + Math.cos(frame * p.speed * 0.8 + p.phase) * p.amp * 0.6;
-        p.pulse += p.pulseSpeed;
+      // Soft orbs
+      orbs.forEach(({ x, y, r, color, a }) => {
+        const gx = x * W, gy = y * H, gr = r * Math.max(W, H);
+        const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
+        g.addColorStop(0, `rgba(${color},${a})`);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
       });
 
-      const maxD = Math.max(W / (COLS - 1), H / (ROWS - 1)) * 2.0;
-
-      // Edges
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const a = pts[i], b = pts[j];
-          const ri = Math.floor(i / COLS), ci = i % COLS;
-          const rj = Math.floor(j / COLS), cj = j % COLS;
-          if (Math.abs(ri - rj) > 1 || Math.abs(ci - cj) > 1) continue;
-          const d = Math.hypot(a.x - b.x, a.y - b.y);
-          if (d > maxD) continue;
-          const alpha = 0.04 + 0.04 * (1 - d / maxD);
-          if (a.bright || b.bright) {
-            ctx.strokeStyle = RED2 + alpha * 2.5 + ")";
-            ctx.lineWidth = 0.7;
-          } else {
-            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-            ctx.lineWidth = 0.4;
-          }
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
+      // Flowing sine lines
+      lines.forEach((l) => {
+        const T = t * l.speed + l.phase;
+        ctx.beginPath();
+        for (let i = 0; i <= 6; i++) {
+          const px = (i / 6) * W;
+          const py =
+            l.yBase * H +
+            Math.sin(i * l.freq + T * 6) * l.amp +
+            Math.sin(i * l.freq * 0.5 + T * 3.5 + l.seed) * l.amp * 0.5;
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
         }
+        ctx.strokeStyle = l.red
+          ? `rgba(230,57,70,${0.18 + 0.06 * Math.sin(T * 2)})`
+          : `rgba(255,255,255,${0.028 + 0.01 * Math.sin(T)})`;
+        ctx.lineWidth = l.width;
+        ctx.stroke();
+      });
+
+      // Bold bezier curves
+      for (let b = 0; b < 3; b++) {
+        const T = t * 0.00055 + b * 2.1;
+        const y0 = (0.25 + b * 0.28) * H;
+        ctx.beginPath();
+        ctx.moveTo(0, y0 + Math.sin(T) * 50);
+        ctx.bezierCurveTo(
+          W * 0.25, y0 + Math.sin(T + 0.5) * 90,
+          W * 0.65, y0 + Math.cos(T * 0.8 + 1) * 80,
+          W,        y0 + Math.sin(T * 1.1 + 2) * 60
+        );
+        const isRed = b === 1;
+        ctx.strokeStyle = isRed
+          ? `rgba(230,57,70,${0.22 + 0.07 * Math.sin(T * 1.5)})`
+          : `rgba(255,255,255,${0.045 + 0.015 * Math.cos(T)})`;
+        ctx.lineWidth = isRed ? 1.2 : 0.6;
+        ctx.stroke();
       }
 
-      // Nodes
-      pts.forEach((p) => {
-        const pv = 0.55 + 0.45 * Math.sin(p.pulse);
-        if (p.bright) {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 3.5 * pv, 0, Math.PI * 2);
-          ctx.fillStyle = RED2 + 0.7 * pv + ")";
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2);
-          ctx.fillStyle = "#fff";
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 1.1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${0.12 * pv + 0.05})`;
-          ctx.fill();
-        }
+      // Scattered dots
+      dots.forEach((d) => {
+        ctx.beginPath();
+        ctx.arc(d.x * W, d.y * H, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = d.red
+          ? `rgba(230,57,70,${d.a})`
+          : `rgba(255,255,255,${d.a})`;
+        ctx.fill();
       });
 
-      frame++;
+      // Subtle grid (right half)
+      ctx.strokeStyle = "rgba(255,255,255,0.018)";
+      ctx.lineWidth = 0.5;
+      const gs = 48;
+      for (let x = W * 0.35; x < W; x += gs) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = 0; y < H; y += gs) {
+        ctx.beginPath(); ctx.moveTo(W * 0.35, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      // Red vertical accent line
+      ctx.strokeStyle = "rgba(230,57,70,0.15)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(W * 0.36, H * 0.15);
+      ctx.lineTo(W * 0.36, H * 0.85);
+      ctx.stroke();
+
+      t++;
       animId = requestAnimationFrame(draw);
     };
 
     draw();
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
@@ -133,11 +154,11 @@ const Hero = () => {
       className="relative min-h-screen flex items-center overflow-hidden"
       data-testid="hero-section"
     >
-      {/* Space background */}
-      <div className="absolute inset-0 bg-[#04040a]" />
-      <GeoMesh />
+      {/* Artistic background */}
+      <div className="absolute inset-0 bg-[#080809]" />
+      <ArtisticBg />
 
-      {/* Bottom & side fades so text stays readable */}
+      {/* Fades for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/75 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30 pointer-events-none" />
 
