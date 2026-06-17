@@ -7,9 +7,7 @@ const FOOTER_LINKS = [
 ];
 
 const Footer = () => {
-  const year = new Date().getFullYear();git add .
-git commit -m "feat: update hero starfield bg, experience reveal animations, project thumbnails"
-git push origin main
+  const year = new Date().getFullYear();
 
   return (
     <footer className="border-t border-white/5 px-6 md:px-10 py-7">

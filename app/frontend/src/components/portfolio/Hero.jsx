@@ -177,7 +177,6 @@ const Hero = () => {
               [ 01 / Introduction ]
             </span>
             <span className="flex items-center gap-2 font-mono-acc text-[10px] tracking-[0.18em] uppercase text-[#E63946]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E63946] animate-pulse" />
               Available for Opportunities
             </span>
           </div>
