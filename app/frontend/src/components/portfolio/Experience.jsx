@@ -58,18 +58,18 @@ const Experience = () => {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="mb-14">
-          <p className="font-mono-acc text-[10px] tracking-[0.32em] uppercase text-white/35 mb-4">
+          <p className="reveal font-mono-acc text-[10px] tracking-[0.32em] uppercase text-white/35 mb-4">
             [ 05 / Experience ]
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+          <h2 className="reveal reveal-delay-1 text-4xl md:text-5xl font-extrabold tracking-tight">
             Experience,
             <span className="block text-[#E63946]">
               Education & Leadership
             </span>
           </h2>
 
-          <p className="mt-5 max-w-2xl text-white/50 text-sm md:text-base leading-relaxed">
+          <p className="reveal reveal-delay-2 mt-5 max-w-2xl text-white/50 text-sm md:text-base leading-relaxed">
             A journey shaped by professional internships, academic excellence,
             and leadership experience through the National Cadet Corps,
             combining technical expertise with discipline, teamwork, and
@@ -85,7 +85,7 @@ const Experience = () => {
               <div
                 key={idx}
                 data-testid={`timeline-item-${idx}`}
-                className={`border border-white/10 bg-[#0A0A0A] p-7 hover:border-[#E63946]/40 transition-all duration-300 ${
+                className={`reveal border border-white/10 bg-[#0A0A0A] p-7 hover:border-[#E63946]/40 transition-all duration-300 ${
                   item.fullWidth ? "md:col-span-2" : ""
                 }`}
               >

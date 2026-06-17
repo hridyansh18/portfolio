@@ -2,12 +2,14 @@ import { Mail, Linkedin, Github } from "lucide-react";
 
 const FOOTER_LINKS = [
   { testid: "footer-link-email", href: "mailto:hridyanshchaudhary18@gmail.com", icon: Mail, label: "Email" },
-  { testid: "footer-link-linkedin", href: "https://linkedin.com/in/hridyanshchaudhary18", icon: Linkedin, label: "LinkedIn" },
-  { testid: "footer-link-github", href: "https://github.com/hridyanshchaudhary18", icon: Github, label: "GitHub" },
+  { testid: "footer-link-linkedin", href: "https://www.linkedin.com/in/hridyanshchaudhary18", icon: Linkedin, label: "LinkedIn" },
+  { testid: "footer-link-github", href: "https://github.com/hridyansh18", icon: Github, label: "GitHub" },
 ];
 
 const Footer = () => {
-  const year = new Date().getFullYear();
+  const year = new Date().getFullYear();git add .
+git commit -m "feat: update hero starfield bg, experience reveal animations, project thumbnails"
+git push origin main
 
   return (
     <footer className="border-t border-white/5 px-6 md:px-10 py-7">

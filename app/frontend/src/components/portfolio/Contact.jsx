@@ -23,7 +23,7 @@ const contactDetails = [
 
 const socials = [
   { label: "LinkedIn", href: "https://linkedin.com/in/hridyanshchaudhary18", icon: Linkedin, red: false },
-  { label: "GitHub", href: "https://github.com/hridyanshchaudhary18", icon: Github, red: false },
+  { label: "GitHub", href: "https://github.com/hridyansh18", icon: Github, red: false },
   { label: "CV", href: cvDownloadUrl, icon: Download, red: true },
 ];
 
